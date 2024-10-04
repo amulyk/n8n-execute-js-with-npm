@@ -4,14 +4,6 @@ import {
 
 export const jsExecutorNodeProperties: INodeProperties[] = [
   {
-    displayName: 'npm Package Name',
-    name: 'npmPackage',
-    type: 'string',
-    default: '',
-    placeholder: 'e.g., lodash',
-    description: 'The name of the npm package to install dynamically.',
-  },
-  {
     displayName: 'JavaScript Code',
     name: 'jsCode',
     type: 'string',
@@ -20,6 +12,6 @@ export const jsExecutorNodeProperties: INodeProperties[] = [
     },
     default: '',
     placeholder: 'e.g., const _ = require("lodash"); console.log(_.random(1, 10));',
-    description: 'The JavaScript code to execute using the installed npm package',
+    description: 'The JavaScript code to execute using the installed npm package(s)',
   },
 ];

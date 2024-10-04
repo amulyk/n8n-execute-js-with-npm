@@ -3,14 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.jsExecutorNodeProperties = void 0;
 exports.jsExecutorNodeProperties = [
     {
-        displayName: 'npm Package Name',
-        name: 'npmPackage',
-        type: 'string',
-        default: '',
-        placeholder: 'e.g., lodash',
-        description: 'The name of the npm package to install dynamically.',
-    },
-    {
         displayName: 'JavaScript Code',
         name: 'jsCode',
         type: 'string',
@@ -19,7 +11,7 @@ exports.jsExecutorNodeProperties = [
         },
         default: '',
         placeholder: 'e.g., const _ = require("lodash"); console.log(_.random(1, 10));',
-        description: 'The JavaScript code to execute using the installed npm package',
+        description: 'The JavaScript code to execute using the installed npm package(s)',
     },
 ];
 //# sourceMappingURL=description.js.map
