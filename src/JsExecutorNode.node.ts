@@ -4,7 +4,7 @@ import {
   IExecuteFunctions,
 } from 'n8n-workflow';
 
-import * as ivm from 'isolated-vm';
+import ivm from 'isolated-vm';
 import { jsExecutorNodeProperties } from './description';
 import * as _ from 'lodash';
 
