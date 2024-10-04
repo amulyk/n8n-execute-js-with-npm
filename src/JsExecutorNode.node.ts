@@ -7,6 +7,8 @@ import {
 import { execSync } from 'child_process';
 import * as ivm from 'isolated-vm';
 import { jsExecutorNodeProperties } from './description';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export class JsExecutorNode {
   description = {
@@ -32,8 +34,15 @@ export class JsExecutorNode {
     }
 
     try {
-      // Встановлення npm пакету
-      execSync(`npm install ${npmPackage}`, { stdio: 'ignore' });
+      // Створення тимчасової директорії для встановлення npm пакетів
+      const tempDir = path.join('/tmp', `npm_temp_${Date.now()}`);
+      fs.mkdirSync(tempDir, { recursive: true });
+
+      // Встановлення npm пакету в тимчасову директорію
+      execSync(`npm install ${npmPackage}`, {
+        cwd: tempDir,
+        stdio: 'inherit',
+      });
 
       // Виконання коду з використанням Isolated VM
       const isolate = new ivm.Isolate({ memoryLimit: 128 }); // memoryLimit in MB
@@ -43,9 +52,9 @@ export class JsExecutorNode {
 
       // Додавання функції require в ізольоване середовище
       const script = await isolate.compileScript(`
-        global.require = (moduleName) => {
-          if (moduleName === '${npmPackage}') {
-            return require(moduleName);
+        global.require = (requestedModule) => {
+          if (requestedModule === npmPackage) {
+            return require(requestedModule);
           } else {
             throw new Error('Only the specified npm package is allowed.');
           }

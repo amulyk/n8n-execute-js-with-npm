@@ -28,6 +28,8 @@ const n8n_workflow_1 = require("n8n-workflow");
 const child_process_1 = require("child_process");
 const ivm = __importStar(require("isolated-vm"));
 const description_1 = require("./description");
+const fs = __importStar(require("fs"));
+const path = __importStar(require("path"));
 class JsExecutorNode {
     constructor() {
         this.description = {
@@ -51,8 +53,14 @@ class JsExecutorNode {
             throw new n8n_workflow_1.NodeOperationError(this.getNode(), 'Please provide an npm package name.');
         }
         try {
-            // Встановлення npm пакету
-            (0, child_process_1.execSync)(`npm install ${npmPackage}`, { stdio: 'ignore' });
+            // Створення тимчасової директорії для встановлення npm пакетів
+            const tempDir = path.join('/tmp', `npm_temp_${Date.now()}`);
+            fs.mkdirSync(tempDir, { recursive: true });
+            // Встановлення npm пакету в тимчасову директорію
+            (0, child_process_1.execSync)(`npm install ${npmPackage}`, {
+                cwd: tempDir,
+                stdio: 'inherit',
+            });
             // Виконання коду з використанням Isolated VM
             const isolate = new ivm.Isolate({ memoryLimit: 128 }); // memoryLimit in MB
             const context = await isolate.createContext();
@@ -60,9 +68,9 @@ class JsExecutorNode {
             await jail.set('global', jail.derefInto());
             // Додавання функції require в ізольоване середовище
             const script = await isolate.compileScript(`
-        global.require = (moduleName) => {
-          if (moduleName === '${npmPackage}') {
-            return require(moduleName);
+        global.require = (requestedModule) => {
+          if (requestedModule === npmPackage) {
+            return require(requestedModule);
           } else {
             throw new Error('Only the specified npm package is allowed.');
           }
