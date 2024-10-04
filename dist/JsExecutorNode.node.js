@@ -22,15 +22,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JsExecutorNode = void 0;
 const n8n_workflow_1 = require("n8n-workflow");
-const isolated_vm_1 = __importDefault(require("isolated-vm"));
 const description_1 = require("./description");
 const _ = __importStar(require("lodash"));
+const ivm = require('isolated-vm');
 class JsExecutorNode {
     constructor() {
         this.description = {
@@ -51,7 +48,7 @@ class JsExecutorNode {
         const jsCode = this.getNodeParameter('jsCode', 0);
         try {
             // Виконання коду з використанням Isolated VM
-            const isolate = new isolated_vm_1.default.Isolate({ memoryLimit: 128 }); // memoryLimit in MB
+            const isolate = new ivm.Isolate({ memoryLimit: 128 }); // memoryLimit in MB
             const context = await isolate.createContext();
             const jail = context.global;
             await jail.set('global', jail.derefInto());

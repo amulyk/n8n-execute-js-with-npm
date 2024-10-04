@@ -3,10 +3,10 @@ import {
   NodeOperationError,
   IExecuteFunctions,
 } from 'n8n-workflow';
-
-import ivm from 'isolated-vm';
 import { jsExecutorNodeProperties } from './description';
 import * as _ from 'lodash';
+
+const ivm = require('isolated-vm');
 
 export class JsExecutorNode {
   description = {
