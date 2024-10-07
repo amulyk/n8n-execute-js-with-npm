@@ -4,11 +4,19 @@ import {
 
 export const jsExecutorNodeProperties: INodeProperties[] = [
   {
+    displayName: 'Server URL',
+    name: 'serverUrl',
+    type: 'string',
+    default: '',
+    placeholder: 'e.g., http://127.0.0.1:3000',
+    description: 'The URL of the server where the JavaScript code will be executed',
+  },
+  {
     displayName: 'JavaScript Code',
     name: 'jsCode',
     type: 'string',
     typeOptions: {
-      rows: 5,
+      rows: 10,
     },
     default: '',
     placeholder: 'e.g., const _ = require("lodash"); console.log(_.random(1, 10));',

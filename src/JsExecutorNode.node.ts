@@ -4,13 +4,11 @@ import {
   IExecuteFunctions,
 } from 'n8n-workflow';
 import { jsExecutorNodeProperties } from './description';
-import * as _ from 'lodash';
-
-const ivm = require('isolated-vm');
+import axios from 'axios';
 
 export class JsExecutorNode {
   description = {
-    displayName: 'Execute JS with NPM',
+    displayName: 'JavaScript',
     name: 'executeJsWithNpm',
     group: ['transform'],
     version: 1,
@@ -18,30 +16,22 @@ export class JsExecutorNode {
     defaults: {
       name: 'Execute JS with NPM',
     },
-    inputs: ['main'],
+    inputs: ['main', 'main'],
     outputs: ['main'],
     properties: jsExecutorNodeProperties,
   };
 
   async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-    const jsCode = this.getNodeParameter('jsCode', 0) as string;
+    const serverUrl = `${this.getNodeParameter('serverUrl', 0) as string}/execute-js`;
+    const jsCode = this.getNodeParameter('jsCode', 1) as string;
 
     try {
-      // Виконання коду з використанням Isolated VM
-      const isolate = new ivm.Isolate({ memoryLimit: 128 }); // memoryLimit in MB
-      const context = await isolate.createContext();
-      const jail = context.global;
-      await jail.set('global', jail.derefInto());
-
-      // Додавання lodash в ізольоване середовище
-      await jail.set('_', _);
-
-      // Додавання користувацького коду в ізольоване середовище
-      const script = await isolate.compileScript(jsCode);
-      const result = await script.run(context);
+      // Відправка коду на сервер за допомогою POST-запиту
+      const response = await axios.post(serverUrl, { code: jsCode });
+      const result = response.data;
 
       // Повернення результату у форматі вкладеного масиву
-      return [this.helpers.returnJsonArray({ result })];
+      return [this.helpers.returnJsonArray({ serverUrl, result })];
     } catch (error) {
       if (error instanceof Error) {
         throw new NodeOperationError(this.getNode(), `Error executing code: ${error.message}`);
