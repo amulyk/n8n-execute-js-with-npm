@@ -34,7 +34,6 @@ export class JsExecutorNode {
         // Створення контекстного об'єкта з вхідними даними
         const context = {
           $json: items[i].json, // Доступ до json вхідних даних
-          $item: items[i], // Можна зберігати весь об'єкт item
         };
 
         // Передаємо JavaScript-код і контекст на сервер через POST запит

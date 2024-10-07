@@ -33,8 +33,7 @@ class JsExecutorNode {
                 let jsCode = this.getNodeParameter('jsCode', i);
                 // Створення контекстного об'єкта з вхідними даними
                 const context = {
-                    $json: items[i].json,
-                    $item: items[i], // Можна зберігати весь об'єкт item
+                    $json: items[i].json, // Доступ до json вхідних даних
                 };
                 // Передаємо JavaScript-код і контекст на сервер через POST запит
                 const response = await axios_1.default.post(serverUrl, {
