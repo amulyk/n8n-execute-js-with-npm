@@ -22,22 +22,35 @@ export class JsExecutorNode {
   };
 
   async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-    const serverUrl = `${this.getNodeParameter('serverUrl', 0) as string}/execute-js`;
-    const jsCode = this.getNodeParameter('jsCode', 1) as string;
+    const items = this.getInputData(); // Отримуємо всі вхідні дані
+    const returnData: INodeExecutionData[] = [];
 
-    try {
-      // Відправка коду на сервер за допомогою POST-запиту
-      const response = await axios.post(serverUrl, { code: jsCode });
-      const result = response.data;
+    for (let i = 0; i < items.length; i++) {
+      try {
+        // Отримуємо параметри з кожного елемента
+        const serverUrl = `${this.getNodeParameter('serverUrl', i) as string}/execute-js`;
+        const jsCode = this.getNodeParameter('jsCode', i) as string;
 
-      // Повернення результату у форматі вкладеного масиву
-      return [this.helpers.returnJsonArray({ serverUrl, result })];
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new NodeOperationError(this.getNode(), `Error executing code: ${error.message}`);
-      } else {
-        throw new NodeOperationError(this.getNode(), 'Error executing code: An unknown error occurred.');
+        // Виконуємо запит на сервер
+        const response = await axios.post(serverUrl, { code: jsCode });
+        const result = response.data;
+
+        // Додаємо результат до масиву для повернення
+        returnData.push({
+          json: {
+            serverUrl,
+            result,
+          },
+        });
+      } catch (error) {
+        if (error instanceof Error) {
+          throw new NodeOperationError(this.getNode(), `Error executing code for item ${i}: ${error.message}`);
+        } else {
+          throw new NodeOperationError(this.getNode(), `Error executing code for item ${i}: An unknown error occurred.`);
+        }
       }
     }
+
+    return [returnData];
   }
 }

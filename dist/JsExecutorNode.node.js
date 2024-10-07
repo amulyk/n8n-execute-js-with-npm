@@ -24,23 +24,34 @@ class JsExecutorNode {
         };
     }
     async execute() {
-        const serverUrl = `${this.getNodeParameter('serverUrl', 0)}/execute-js`;
-        const jsCode = this.getNodeParameter('jsCode', 1);
-        try {
-            // Відправка коду на сервер за допомогою POST-запиту
-            const response = await axios_1.default.post(serverUrl, { code: jsCode });
-            const result = response.data;
-            // Повернення результату у форматі вкладеного масиву
-            return [this.helpers.returnJsonArray({ serverUrl, result })];
-        }
-        catch (error) {
-            if (error instanceof Error) {
-                throw new n8n_workflow_1.NodeOperationError(this.getNode(), `Error executing code: ${error.message}`);
+        const items = this.getInputData(); // Отримуємо всі вхідні дані
+        const returnData = [];
+        for (let i = 0; i < items.length; i++) {
+            try {
+                // Отримуємо параметри з кожного елемента
+                const serverUrl = `${this.getNodeParameter('serverUrl', i)}/execute-js`;
+                const jsCode = this.getNodeParameter('jsCode', i);
+                // Виконуємо запит на сервер
+                const response = await axios_1.default.post(serverUrl, { code: jsCode });
+                const result = response.data;
+                // Додаємо результат до масиву для повернення
+                returnData.push({
+                    json: {
+                        serverUrl,
+                        result,
+                    },
+                });
             }
-            else {
-                throw new n8n_workflow_1.NodeOperationError(this.getNode(), 'Error executing code: An unknown error occurred.');
+            catch (error) {
+                if (error instanceof Error) {
+                    throw new n8n_workflow_1.NodeOperationError(this.getNode(), `Error executing code for item ${i}: ${error.message}`);
+                }
+                else {
+                    throw new n8n_workflow_1.NodeOperationError(this.getNode(), `Error executing code for item ${i}: An unknown error occurred.`);
+                }
             }
         }
+        return [returnData];
     }
 }
 exports.JsExecutorNode = JsExecutorNode;
