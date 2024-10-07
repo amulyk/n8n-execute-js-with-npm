@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-execute-js-with-npm",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "n8n custom node to execute JavaScript with npm packages",
   "license": "Apache 2.0 with Commons Clause",
   "homepage": "https://github.com/amulyk/n8n-execute-js-with-npm",

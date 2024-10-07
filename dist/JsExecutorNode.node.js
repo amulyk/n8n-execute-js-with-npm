@@ -1,37 +1,16 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JsExecutorNode = void 0;
 const n8n_workflow_1 = require("n8n-workflow");
 const description_1 = require("./description");
-const _ = __importStar(require("lodash"));
-const ivm = require('isolated-vm');
+const axios_1 = __importDefault(require("axios"));
 class JsExecutorNode {
     constructor() {
         this.description = {
-            displayName: 'Execute JS with NPM',
+            displayName: 'JavaScript',
             name: 'executeJsWithNpm',
             group: ['transform'],
             version: 1,
@@ -39,26 +18,20 @@ class JsExecutorNode {
             defaults: {
                 name: 'Execute JS with NPM',
             },
-            inputs: ['main'],
+            inputs: ['main', 'main'],
             outputs: ['main'],
             properties: description_1.jsExecutorNodeProperties,
         };
     }
     async execute() {
-        const jsCode = this.getNodeParameter('jsCode', 0);
+        const serverUrl = `${this.getNodeParameter('serverUrl', 0)}/execute-js`;
+        const jsCode = this.getNodeParameter('jsCode', 1);
         try {
-            // Виконання коду з використанням Isolated VM
-            const isolate = new ivm.Isolate({ memoryLimit: 128 }); // memoryLimit in MB
-            const context = await isolate.createContext();
-            const jail = context.global;
-            await jail.set('global', jail.derefInto());
-            // Додавання lodash в ізольоване середовище
-            await jail.set('_', _);
-            // Додавання користувацького коду в ізольоване середовище
-            const script = await isolate.compileScript(jsCode);
-            const result = await script.run(context);
+            // Відправка коду на сервер за допомогою POST-запиту
+            const response = await axios_1.default.post(serverUrl, { code: jsCode });
+            const result = response.data;
             // Повернення результату у форматі вкладеного масиву
-            return [this.helpers.returnJsonArray({ result })];
+            return [this.helpers.returnJsonArray({ serverUrl, result })];
         }
         catch (error) {
             if (error instanceof Error) {
