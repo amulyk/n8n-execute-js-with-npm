@@ -18,7 +18,7 @@ class JsExecutorNode {
             defaults: {
                 name: 'Execute JS with NPM',
             },
-            inputs: ['main', 'main'],
+            inputs: ['main'],
             outputs: ['main'],
             properties: description_1.jsExecutorNodeProperties,
         };
