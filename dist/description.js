@@ -16,6 +16,7 @@ exports.jsExecutorNodeProperties = [
         type: 'string',
         typeOptions: {
             rows: 10,
+            editor: 'jsEditor'
         },
         default: '',
         placeholder: 'e.g., const _ = require("lodash"); console.log(_.random(1, 10));',

@@ -29,10 +29,21 @@ export class JsExecutorNode {
       try {
         // Отримуємо параметри з кожного елемента
         const serverUrl = `${this.getNodeParameter('serverUrl', i) as string}/execute-js`;
-        const jsCode = this.getNodeParameter('jsCode', i) as string;
+        let jsCode = this.getNodeParameter('jsCode', i) as string;
 
-        // Виконуємо запит на сервер
-        const response = await axios.post(serverUrl, { code: jsCode });
+        // Створення контекстного об'єкта з вхідними даними
+        const context = {
+          $json: items[i].json, // Доступ до json вхідних даних
+          $item: items[i], // Можна зберігати весь об'єкт item
+        };
+
+        // Передаємо JavaScript-код і контекст на сервер через POST запит
+        const response = await axios.post(serverUrl, {
+          code: jsCode,
+          context: context, // Передаємо контекст як частину даних запиту
+        });
+
+        // Результат, який повертає сервер
         const result = response.data;
 
         // Додаємо результат до масиву для повернення
