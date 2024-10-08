@@ -43,7 +43,20 @@ export class JsExecutorNode {
         });
 
         // Результат, який повертає сервер
-        const result = response.data;
+        let result = response.data;
+
+        // Перевіряємо, чи результат є рядком, який потрібно парсити
+        if (typeof result === 'string') {
+          try {
+            result = JSON.parse(result);
+          } catch (parseError) {
+            if (parseError instanceof Error) {
+              throw new NodeOperationError(this.getNode(), `Failed to parse result as JSON: ${parseError.message}`);
+            } else {
+              throw new NodeOperationError(this.getNode(), 'Failed to parse result as JSON: An unknown error occurred.');
+            }
+          }
+        }
 
         // Додаємо результат до масиву для повернення
         returnData.push({
