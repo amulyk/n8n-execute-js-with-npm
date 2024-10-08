@@ -33,7 +33,19 @@ class JsExecutorNode {
                 let jsCode = this.getNodeParameter('jsCode', i);
                 // Створення контекстного об'єкта з вхідними даними
                 const context = {
-                    $json: items[i].json, // Доступ до json вхідних даних
+                    $json: items[i].json,
+                    getInput: () => items[i].json,
+                    saveOutput: (data) => {
+                        try {
+                            const jsonData = JSON.stringify(data);
+                            console.log(jsonData);
+                        }
+                        catch (error) {
+                            if (error instanceof Error) {
+                                throw new n8n_workflow_1.NodeOperationError(this.getNode(), `Failed to convert data to JSON: ${error.message}`);
+                            }
+                        }
+                    }
                 };
                 // Передаємо JavaScript-код і контекст на сервер через POST запит
                 const response = await axios_1.default.post(serverUrl, {
@@ -58,10 +70,7 @@ class JsExecutorNode {
                 }
                 // Додаємо результат до масиву для повернення
                 returnData.push({
-                    json: {
-                        serverUrl,
-                        result,
-                    },
+                    json: result,
                 });
             }
             catch (error) {
