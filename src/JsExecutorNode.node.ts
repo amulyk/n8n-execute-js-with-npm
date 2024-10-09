@@ -67,7 +67,7 @@ export class JsExecutorNode {
 
         // Додаємо результат до масиву для повернення
         returnData.push({
-          json: parsedResource.result,
+          json: parsedResource,
         });
       } catch (error) {
         if (error instanceof Error) {
