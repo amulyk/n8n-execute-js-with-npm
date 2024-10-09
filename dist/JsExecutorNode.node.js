@@ -41,11 +41,12 @@ class JsExecutorNode {
                     context: context, // Передаємо контекст як частину даних запиту
                 });
                 // Результат, який повертає сервер
-                let result = response.data;
+                let resource = response.data;
+                let parsedResource;
                 // Перевіряємо, чи результат є рядком, який потрібно парсити
-                if (typeof result === 'string') {
+                if (typeof resource === 'string') {
                     try {
-                        result = JSON.parse(result);
+                        parsedResource = JSON.parse(resource);
                     }
                     catch (parseError) {
                         if (parseError instanceof Error) {
@@ -58,7 +59,7 @@ class JsExecutorNode {
                 }
                 // Додаємо результат до масиву для повернення
                 returnData.push({
-                    json: result,
+                    json: parsedResource.result,
                 });
             }
             catch (error) {

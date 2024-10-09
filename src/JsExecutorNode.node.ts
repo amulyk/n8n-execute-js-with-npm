@@ -43,12 +43,13 @@ export class JsExecutorNode {
         });
 
         // Результат, який повертає сервер
-        let result = response.data;
+        let resource = response.data;
+        let parsedResource;
 
         // Перевіряємо, чи результат є рядком, який потрібно парсити
-        if (typeof result === 'string') {
+        if (typeof resource === 'string') {
           try {
-            result = JSON.parse(result);
+            parsedResource = JSON.parse(resource);
           } catch (parseError) {
             if (parseError instanceof Error) {
               throw new NodeOperationError(this.getNode(), `Failed to parse result as JSON: ${parseError.message}`);
@@ -60,7 +61,7 @@ export class JsExecutorNode {
 
         // Додаємо результат до масиву для повернення
         returnData.push({
-          json: result,
+          json: parsedResource.result,
         });
       } catch (error) {
         if (error instanceof Error) {
