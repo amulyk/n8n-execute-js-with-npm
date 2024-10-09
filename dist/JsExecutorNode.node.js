@@ -57,6 +57,14 @@ class JsExecutorNode {
                         }
                     }
                 }
+                else if (typeof resource === 'object') {
+                    if (resource.result === undefined) {
+                        throw new n8n_workflow_1.NodeOperationError(this.getNode(), 'The response from the server is missing the "result" property.');
+                    }
+                    else {
+                        parsedResource = resource.result;
+                    }
+                }
                 // Додаємо результат до масиву для повернення
                 returnData.push({
                     json: parsedResource.result,

@@ -57,6 +57,12 @@ export class JsExecutorNode {
               throw new NodeOperationError(this.getNode(), 'Failed to parse result as JSON: An unknown error occurred.');
             }
           }
+        } else if (typeof resource === 'object') {
+          if (resource.result === undefined) {
+            throw new NodeOperationError(this.getNode(), 'The response from the server is missing the "result" property.');
+          } else {
+            parsedResource = resource.result;
+          }
         }
 
         // Додаємо результат до масиву для повернення
