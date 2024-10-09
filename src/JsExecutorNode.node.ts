@@ -34,18 +34,6 @@ export class JsExecutorNode {
         // Створення контекстного об'єкта з вхідними даними
         const context = {
           $json: items[i].json, // Доступ до json вхідних даних
-          getInput: () => items[i].json, // Функція для отримання вхідних даних
-          saveOutput: (data: unknown) => {
-            try {
-              const jsonData = JSON.stringify(data);
-
-              console.log(jsonData);
-            } catch (error) {
-              if (error instanceof Error) {
-                throw new NodeOperationError(this.getNode(), `Failed to convert data to JSON: ${error.message}`);
-              }
-            }
-          }
         };
 
         // Передаємо JavaScript-код і контекст на сервер через POST запит
