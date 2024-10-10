@@ -8,7 +8,7 @@ export const jsExecutorNodeProperties: INodeProperties[] = [
     name: 'serverUrl',
     type: 'string',
     default: '',
-    placeholder: 'e.g., http://127.0.0.1:3000',
+    placeholder: 'e.g., http://n8n-js-vm:3000',
     description: 'The URL of the server where the JavaScript code will be executed',
   },
   {
@@ -16,11 +16,11 @@ export const jsExecutorNodeProperties: INodeProperties[] = [
     name: 'jsCode',
     type: 'string',
     typeOptions: {
-      rows: 10,
+      rows: 50,
       editor: 'jsEditor'
     },
     default: '',
-    placeholder: 'e.g., const _ = require("lodash"); console.log(_.random(1, 10));',
-    description: 'The JavaScript code to execute using the installed npm package(s)',
+    placeholder: 'e.g., const _ = require("lodash"); const inputData = input.data; const result = _.random(1, 10); saveOutput(result);',
+    description: 'The JavaScript code to execute using the installed npm package(s). Variable input contains the input data from previous step. Function saveOutput(data) can be used to save data for next step.',
   },
 ];

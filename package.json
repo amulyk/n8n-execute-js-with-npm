@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-execute-js-with-npm",
-  "version": "0.20.0",
+  "version": "0.21.0",
   "description": "n8n custom node to execute JavaScript with npm packages",
   "license": "Apache 2.0 with Commons Clause",
   "homepage": "https://github.com/amulyk/n8n-execute-js-with-npm",
@@ -20,7 +20,9 @@
   },
   "main": "dist/JsExecutorNode.node.js",
   "scripts": {
-    "build": "tsc"
+    "compile": "tsc",
+    "asstes:copy": "cp -r src/assets/* dist/",
+    "build": "npm run compile && npm run asstes:copy"
   },
   "dependencies": {
     "@types/node": "^22.7.4",
