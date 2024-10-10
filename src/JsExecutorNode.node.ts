@@ -12,7 +12,7 @@ export class JsExecutorNode {
     name: 'executeJsWithNpm',
     group: ['transform'],
     icon: 'file:icon.svg',
-    version: "0.21.0",
+    version: 0,
     description: 'Execute JavaScript code with NPM packages',
     defaults: {
       name: 'JavaScript',
